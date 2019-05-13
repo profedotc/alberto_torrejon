@@ -17,19 +17,16 @@ int main(){
 	// Declara dos mundos
 	int ini[X][Y];
 	int fin[X][Y];
-	
-	int inicial=ini;
-	int final=fin;
 
 	// Inicializa el mundo
-	gol_init(inicial);
+	gol_init(ini);
 	
 	do {
 		printf("\033cIteration %d\n", i++);
 		// Imprime el mundo
-		gol_print(inicial);
+		gol_print(ini);
 		// Itera
-		gol_step(inicial,final);
+		gol_step(ini,fin);
 		
 	} while (getchar() != 'q');
 
@@ -46,7 +43,6 @@ void gol_init(int ini[X][Y]){
 	ini[5][5]=1;
 	ini[5][6]=1;
 	ini[5][7]=1;
-
 }
 
 void gol_print(int ini[X][Y]){
@@ -64,31 +60,32 @@ void gol_step(int ini[X][Y],int fin[X][Y]){
 	int	i,j;
 	for (i=1;i<X-1;i++){
 		for (j=1;j<Y-1;j++){
-		fin[i][j]=gol_get_cell(ini[X][Y],i,j);
+		fin[i][j]=gol_get_cell(ini,i,j);
 	}}
-	gol_copy(ini[X][Y],fin[X][Y]);
+	gol_copy(ini,fin);
 }
 
 int gol_count_neighbors(int ini[X][Y],int i,int j){
 	// Devuelve el número de vecinos
-	int contador=0;
-	if (ini[i-1][j]==1) contador++;
-	if (ini[i+1][j]==1) contador++;
-	if (ini[i][j-1]==1) contador++;
-	if (ini[i][j+1]==1) contador++;
-	if (ini[i-1][j-1]==1) contador++;
-	if (ini[i+1][j-1]==1) contador++;
-	if (ini[i+1][j+1]==1) contador++;
-	if (ini[i-1][j+1]==1) contador++;
+	int contador = -ini[i][j];
+	for (int k = i-1; k < i+2; k++)
+	{
+		for (int l = j-1; l < j+2; l++)
+		{
+			contador += ini[k][l];
+		}
+		
+	}
 	return contador;
 }
 
 bool gol_get_cell(int ini[X][Y],int i,int j){
-	// Devuelve el estado de la célula de posición indicada
-	if (gol_count_neighbors(ini[X][Y],i,j)==2) 1;
-	if (gol_count_neighbors(ini[X][Y],i,j)==3) 1;
-	if (gol_count_neighbors(ini[X][Y],i,j)<2) 0;
-	if (gol_count_neighbors(ini[X][Y],i,j)>3) 0;
+	switch (gol_count_neighbors(ini, i, j))
+	{
+	case 2: return ini[i][j];
+	case 3: return 1;
+	default: return 0;
+	}
 }
 
 void gol_copy(int ini[X][Y],int fin[X][Y]){
