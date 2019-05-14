@@ -26,10 +26,8 @@ int main(){
 		// Imprime el mundo
 		gol_print(ini);
 		// Itera
-		gol_step(ini,fin);
-		
+		gol_step(ini,fin);	
 	} while (getchar() != 'q');
-
 	return EXIT_SUCCESS;
 }
 
@@ -43,6 +41,7 @@ void gol_init(int ini[X][Y]){
 	ini[5][5]=1;
 	ini[5][6]=1;
 	ini[5][7]=1;
+
 }
 
 void gol_print(int ini[X][Y]){
@@ -68,13 +67,12 @@ void gol_step(int ini[X][Y],int fin[X][Y]){
 int gol_count_neighbors(int ini[X][Y],int i,int j){
 	// Devuelve el número de vecinos
 	int contador = -ini[i][j];
-	for (int k = i-1; k < i+2; k++)
+	for (int k = i-1; k <= i+1; k++)
 	{
-		for (int l = j-1; l < j+2; l++)
+		for (int l = j-1; l <= j+1; l++)
 		{
 			contador += ini[k][l];
-		}
-		
+		}	
 	}
 	return contador;
 }
