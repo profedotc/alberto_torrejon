@@ -88,10 +88,10 @@ int gol_count_neighbors(int ini[X][Y],int i,int j){
 
 bool gol_get_cell(int mundo[X][Y],int i,int j){
 	//Validación del mundo
-	if ( (i>X && i<0) || (j>Y && j<0) ){
-		return 0;
-	} else {
+	if (i >= 0 && j >= 0 && i < X && j < Y){
 		return mundo[i][j];
+	}else{
+		return 0;
 	}
 }
 
