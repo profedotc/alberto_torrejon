@@ -2,84 +2,104 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void gol_init(/* Recibo un mundo */);
-void gol_print(/* Recibo un mundo */);
-void gol_step(/* Recibo dos mundos */);
-int gol_count_neighbors(/* Recibo un mundo y unas coordenadas */);
-bool gol_get_cell(/* Recibo un mundo y unas coordenadas */);
-void gol_copy(/* Recibo dos mundos */);
+#define X 10
+#define Y 10
 
-int main()
-{
+void gol_init(int ini[X][Y]);
+void gol_print(int ini[X][Y]);
+void gol_step(int ini[X][Y],int fin[X][Y]);
+bool gol_rule(int ini[X][Y],int i,int j);
+int gol_count_neighbors(int ini[X][Y],int i,int j);
+bool gol_get_cell(int ini[X][Y],int i,int j);
+void gol_copy(int ini[X][Y],int fin[X][Y]);
+
+int main(){
 	int i = 0;
-	// TODO: Declara dos mundos
 
-	// TODO: inicializa el mundo
+	// Declara dos mundos
+	int ini[X][Y];
+	int fin[X][Y];
+
+	// Inicializa el mundo
+	gol_init(ini);
+	
 	do {
 		printf("\033cIteration %d\n", i++);
-		// TODO: Imprime el mundo
-		// TODO: Itera
+		// Imprime el mundo
+		gol_print(ini);
+		// Itera
+		gol_step(ini,fin);	
 	} while (getchar() != 'q');
-
 	return EXIT_SUCCESS;
 }
 
-void gol_init(/* Recibo un mundo */)
-{
-	// TODO: Poner el mundo a false
-
-	/* TODO: Inicializar con el patrón del glider:
-	 *           . # .
-	 *           . . #
-	 *           # # #
-	 */
+void gol_init(int ini[X][Y]){
+	// Poner el mundo a false
+	int	i,j;
+	for (i=0; i<X; i++) 
+		for (j=0; j<Y; j++) 
+			ini[i][j] = 0;
+	// Inicializar con un patrón
+	ini[5][5]=1;
+	ini[5][6]=1;
+	ini[5][7]=1;
 }
 
-void gol_print(/* Recibo un mundo */)
-{
-	// TODO: Imprimir el mundo por consola. Sugerencia:
-	/*
-	 *     . # . . . . . . . .
-	 *     . . # . . . . . . .
-	 *     # # # . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 *     . . . . . . . . . .
-	 */
+void gol_print(int ini[X][Y]){
+	// Imprimir el mundo por consola
+	int	i,j;
+	for (i=0;i<X;i++){
+		for (j=0; j<Y; j++){
+			printf("%c",ini[i][j]?'x':' ');
+		}
+		printf("\n");
+	}
 }
 
-void gol_step(/* Recibo dos mundos */)
-{
-	/*
-	 * TODO:
-	 * - Recorrer el mundo célula por célula comprobando si nace, sobrevive
-	 *   o muere.
-	 *
-	 * - No se puede cambiar el estado del mundo a la vez que se recorre:
-	 *   Usar un mundo auxiliar para guardar el siguiente estado.
-	 *
-	 * - Copiar el mundo auxiliar sobre el mundo principal
-	 */
+void gol_step(int ini[X][Y],int fin[X][Y]){
+	//Función para iterar
+	int	i,j;
+	for (i=0; i<=X; i++){
+		for (j=1; j<=Y; j++){
+		fin[i][j]=gol_rule(ini,i,j);
+	}}
+	gol_copy(ini,fin);
 }
 
-int gol_count_neighbors(/* Recibo un mundo y unas coordenadas */)
-{
+bool gol_rule(int ini[X][Y],int i,int j){
+	switch (gol_count_neighbors(ini, i, j))
+	{
+	case 2: return ini[i][j];
+	case 3: return 1;
+	default: return 0;
+	}
+}
+
+int gol_count_neighbors(int ini[X][Y],int i,int j){
 	// Devuelve el número de vecinos
+	int contador = -ini[i][j];
+	for (int k = i-1; k <= i+1; k++){
+		for (int l = j-1; l <= j+1; l++){
+			contador += ini[k][l];
+		}	
+	}
+	return contador;
 }
 
-bool gol_get_cell(/* Recibo un mundo y unas coordenadas */)
-{
-	/*
-	 * TODO: Devuelve el estado de la célula de posición indicada
-	 * (¡cuidado con los límites del array!)
-	 */
+bool gol_get_cell(int mundo[X][Y],int i,int j){
+	//Validación del mundo
+	if (i >= 0 && j >= 0 && i < X && j < Y){
+		return mundo[i][j];
+	}else{
+		return 0;
+	}
 }
 
-void gol_copy(/* Recibo dos mundos */)
-{
-	// TODO: copia el mundo segundo mundo sobre el primero
+void gol_copy(int ini[X][Y],int fin[X][Y]){
+	// Copia el mundo segundo mundo sobre el primero
+	int	i,j;
+	for (i=1;i<X-1;i++){
+		for (j=1;j<Y-1;j++){
+			ini[i][j]=fin[i][j];
+	}}
 }
