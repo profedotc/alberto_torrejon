@@ -1,7 +1,7 @@
 Juego de la vida
 ================
 
-<p>Se trata de un **juego de cero** jugadores, su evolución está determinada por el estado inicial y no necesita ninguna entrada de datos posterior. El "tablero de juego" es una malla plana formada por cuadrados (las "células") que se extiende por el infinito en todas las direcciones. 
+<p>Se trata de un __juego de cero__ jugadores, su evolución está determinada por el estado inicial y no necesita ninguna entrada de datos posterior. El "tablero de juego" es una malla plana formada por cuadrados (las "células") que se extiende por el infinito en todas las direcciones. 
 
 Cada célula tiene 8 células "vecinas", que son las que están próximas a ella, incluidas las diagonales. 
 
