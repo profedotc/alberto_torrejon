@@ -4,12 +4,12 @@
 #define X 10
 #define Y 10
 
-void gol_init(int ini[X][Y]);
-void gol_print(int ini[X][Y]);
-void gol_step(int ini[X][Y],int fin[X][Y],int i);
-int gol_count_neighbors(int ini[X][Y],int i,int j);
-bool gol_rule(int ini[X][Y],int i,int j);
-bool gol_get_cell(int ini[X][Y],int i,int j);
+void gol_init(int world[][X][Y]);
+void gol_print(int world[][X][Y],int s);
+void gol_step(int world[][X][Y],int s);
+int gol_count_neighbors(int world[][X][Y],int i,int j,int s);
+bool gol_rule(int world[][X][Y],int i,int j,int s);
+bool gol_get_cell(int world[][X][Y],int i,int j,int s);
 
 
 #endif
