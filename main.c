@@ -7,20 +7,13 @@
 int main(){
 
 	int i = 0;
-	
-	// Declara dos mundos
-	int ini[X][Y];
-	int fin[X][Y];
+	int world[2][X][Y];
 
-	// Inicializa el mundo
-	gol_init(ini);
+	gol_init(world);
 	
 	do {
-	
 		printf("\033cIteration %d\n", i++);
-	
-		//Iterar
-		gol_step(ini,fin,i);
+		gol_step(world,i%2);
 
 	} while (getchar() != 'q');
 	return EXIT_SUCCESS;
