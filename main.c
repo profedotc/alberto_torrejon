@@ -7,14 +7,17 @@
 int main(){
 
 	int i = 0;
-	int world[2][X][Y];
+	struct world w;
 
-	gol_init(world);
+	gol_init(&w);
 	
 	do {
 		printf("\033cIteration %d\n", i++);
-		gol_step(world,i%2);
+		gol_print(&w);
+		gol_step(&w);
 
 	} while (getchar() != 'q');
 	return EXIT_SUCCESS;
 }
+
+
