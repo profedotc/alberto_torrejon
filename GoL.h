@@ -4,12 +4,16 @@
 #define X 10
 #define Y 10
 
-void gol_init(int world[][X][Y]);
-void gol_print(int world[][X][Y],int s);
-void gol_step(int world[][X][Y],int s);
-int gol_count_neighbors(int world[][X][Y],int i,int j,int s);
-bool gol_rule(int world[][X][Y],int i,int j,int s);
-bool gol_get_cell(int world[][X][Y],int i,int j,int s);
+struct world {
+    int worlds[2][X][Y];
+    int s; //current world
+};
 
+void gol_init(struct world *w);
+void gol_print(struct world *w);
+void gol_step(struct world *w);
+//int gol_count_neighbors(struct world *w,int i,int j);
+//bool gol_rule(struct world *w,int i,int j);
+//bool gol_get_cell(struct world *w,int i,int j);
 
 #endif
