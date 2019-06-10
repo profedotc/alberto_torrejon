@@ -5,15 +5,15 @@
 #define Y 10
 
 struct world {
-    int worlds[2][X][Y];
-    int s; //current world
+    bool **worlds[2];
 };
 
-void gol_init(struct world *w);
-void gol_print(struct world *w);
-void gol_step(struct world *w);
-//int gol_count_neighbors(struct world *w,int i,int j);
-//bool gol_rule(struct world *w,int i,int j);
-//bool gol_get_cell(struct world *w,int i,int j);
+void gol_init(struct world *w, int size_x, int size_y);
+void gol_print(struct world *w, int size_x, int size_y);
+void gol_step(struct world *w, int size_x, int size_y);
+
+void gol_alloc(struct world *w, int size_x, int size_y);
+void gol_free(struct world *w, int size_y);
+
 
 #endif

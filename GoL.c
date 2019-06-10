@@ -2,64 +2,94 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "GoL.h"
+#include "gol.h"
 
-static bool get_cell(struct world *w,int i,int j){
-	//Validación del mundo
-	if (i >= 0 && j >= 0 && i < X && j < Y){
-		return w->worlds[w->s][i][j];
-	}else{
-		return 0;
-	}
+enum world_state {
+	CURRENT = 0,
+	NEXT = 1,
+};
+
+static bool get_cell(struct world *w, int i, int j, int size_x, int size_y);
+static int count_neighbors(struct world *w, int i, int j, int size_x, int size_y);
+static bool rule(struct world *w,int i,int j, int size_x, int size_y);
+
+//Reserva de memoria
+void gol_alloc(struct world *w, int size_x, int size_y){
+  w->worlds[CURRENT] = (bool **)malloc(size_x * sizeof(bool *));
+  w->worlds[NEXT] = (bool **)malloc(size_x * sizeof(bool *));
+  for (int i = 0; i < size_y; i++){
+    w->worlds[CURRENT][i] = (bool *)malloc(size_y * sizeof(bool));
+    w->worlds[NEXT][i] = (bool *)malloc(size_y * sizeof(bool));
+  }
 }
 
-static int count_neighbors(struct world *w,int i,int j){
-	// Devuelve el número de vecinos
-	int contador = -w->worlds[w->s][i][j];
-	for (int k = i-1; k <= i+1; k++){
-		for (int l = j-1; l <= j+1; l++){
-			contador += get_cell(w,k,l); 
-		}	
-	}
-	return contador;
+//Liberación memoria
+void gol_free(struct world *w, int size_y){
+  for (int i = 0; i < size_y; i++){
+    free(w->worlds[NEXT][i]);
+    free(w->worlds[CURRENT][i]);
+  }
+  free(w->worlds[NEXT]);
+  free(w->worlds[CURRENT]);
 }
 
-static bool rule(struct world *w,int i,int j){
-	switch (count_neighbors(w, i, j)){
-	case 2: return w->worlds[w->s][i][j];
-	case 3: return 1;
-	default: return 0;
-	}
-}
-
-void gol_init(struct world *w){
+//Inicializar el mundo
+void gol_init(struct world *w, int size_x, int size_y){
 	// Poner el mundo a false
-	for (int k=0;k<2;k++){
-		for (int i=0; i<X; i++) 
-			for (int j=0; j<Y; j++) 
-				w->worlds[k][i][j] = 0;
+		for (int i=0; i<size_x; i++) 
+			for (int j=0; j<size_y; j++) 
+				w->worlds[CURRENT][i][j] = 0;
 	// Inicializar con un patrón
-	w->worlds[k][5][5]=1;
-	w->worlds[k][5][6]=1;
-	w->worlds[k][5][7]=1;
-	}
-	w->s = 0;
+	w->worlds[CURRENT][5][5]=1;
+	w->worlds[CURRENT][5][6]=1;
+	w->worlds[CURRENT][5][7]=1;
 }
 
-
-void gol_print(struct world *w){
-	for (int i=0;i<X;i++){
-		for (int j=0; j<Y; j++){
-			printf("%c",w->worlds[w->s][i][j]?'x':' ');
+//Imprimir mundo
+void gol_print(struct world *w,int size_x, int size_y){
+	for (int i=0;i<size_x;i++){
+		for (int j=0; j<size_y; j++){
+			printf("%c",w->worlds[CURRENT][i][j]?'x':' ');
 		}
 		printf("\n");
 	}
 }
 
-void gol_step(struct world *w){
-	for (int i=0; i<X; i++)
-		for (int j=0; j<Y; j++)
-			w->worlds[!(w->s)][i][j] = rule(w,i,j);
-	w->s=!(w->s);
+void gol_step(struct world *w,int size_x, int size_y){
+	for (int i=0; i<size_x; i++)
+		for (int j=0; j<size_y; j++)
+			w->worlds[NEXT][i][j] = rule(w,i,j,size_x,size_y);
+	//Cambio del mundo
+	bool *aux = w->worlds[1];
+	w->worlds[1] = w->worlds[0];
+	w->worlds[0] = aux;
+}
+
+static bool rule(struct world *w,int i,int j, int size_x, int size_y){
+	switch (count_neighbors(w, i, j, size_x, size_y)){
+	case 2: return w->worlds[CURRENT][i][j];
+	case 3: return 1;
+	default: return 0;
+	}
+}
+
+static bool get_cell(struct world *w,int i,int j,int size_x, int size_y){
+	//Validación del mundo
+	if (i >= 0 && j >= 0 && i < size_x && j < size_y){
+		return w->worlds[CURRENT][i][j];
+	}else{
+		return 0;
+	}
+}
+
+static int count_neighbors(struct world *w,int i,int j,int size_x,int size_y){
+	// Devuelve el número de vecinos
+	int contador = -w->worlds[CURRENT][i][j];
+	for (int k = i-1; k <= i+1; k++){
+		for (int l = j-1; l <= j+1; l++){
+			contador += get_cell(w,k,l,size_x,size_y); 
+		}	
+	}
+	return contador;
 }
 
