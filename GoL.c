@@ -60,9 +60,9 @@ void gol_step(struct world *w,int size_x, int size_y){
 		for (int j=0; j<size_y; j++)
 			w->worlds[NEXT][i][j] = rule(w,i,j,size_x,size_y);
 	//Cambio del mundo
-	bool *aux = w->worlds[1];
-	w->worlds[1] = w->worlds[0];
-	w->worlds[0] = aux;
+	bool *aux = w->worlds[NEXT];
+	w->worlds[NEXT] = w->worlds[CURRENT];
+	w->worlds[CURRENT] = aux;
 }
 
 static bool rule(struct world *w,int i,int j, int size_x, int size_y){
