@@ -4,25 +4,29 @@
 
 #include "gol.h"
 
+#define ITER 1000
+
 int main(){
 
 	int i = 0;
 	struct world w;
-
+	
+    //gol_alloc(&w,X,Y);
 	if (!gol_alloc(&w,X,Y)){
         fprintf(stderr, "Error couldn't allocate memory\n");
         return EXIT_FAILURE;
     }
 
+    gol_alloc(&w);
 	gol_init(&w);
 	
-	do {
-		printf("\033cIteration %d\n", i++);
-		gol_print(&w);
-		gol_step(&w);
-	} while (getchar() != 'q');
-
+    for (int i = 0; i < ITER; i++)
+        gol_step(&w);
+    
+    gol_free(&w);
+    
 	gol_free(&w);
+
 	return EXIT_SUCCESS;
 }
 

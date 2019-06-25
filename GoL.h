@@ -2,18 +2,19 @@
 #define _GOL_H_
 
 #define X 10
-#define Y 10
+#define Y 20
 
 struct world {
-    bool **worlds[2];
+    bool *worlds[2];
+    int nrows;
+    int ncols;
 };
 
-void gol_init(struct world *w, int size_x, int size_y);
-void gol_print(struct world *w, int size_x, int size_y);
-void gol_step(struct world *w, int size_x, int size_y);
+void gol_init(struct world *w);
+void gol_print(struct world *w);
+void gol_step(struct world *w);
 
-void gol_alloc(struct world *w, int size_x, int size_y);
-void gol_free(struct world *w, int size_y);
-
+bool gol_alloc(struct world *w,int size_x,int size_y);
+void gol_free(struct world *w);
 
 #endif
