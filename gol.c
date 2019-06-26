@@ -60,13 +60,61 @@ void gol_free(struct world *w){
 		free(w->mem);
 }
 
+//Guardar como binario 
+bool gol_save(const struct world *w,const char *file){
+	
+	FILE *f;
+	f = fopen(file, "w");
+	if(!f){
+		perror("Couldn't open de world file");
+		return false;
+	}
+
+	fwrite(w->worlds[CURRENT],sizeof(bool), w->nrows * w->ncols,f);
+	if (ferror(f)){
+		perror("Couldn't write the world file");
+		fclose(f);
+		return false;
+	}
+
+	fclose(f);
+	return true;
+
+}
+ 
+//Cargar binario 
+bool gol_load(struct world *w,const char *file){
+	
+	size_t read_bytes;
+	size_t size;
+
+	FILE *f;
+	f = fopen(file, "r");
+	if(!f){
+		perror("Couldn't open de world file");
+		return false;
+	}
+
+	read_bytes = fread(w->worlds[CURRENT],sizeof(bool), w->nrows * w->ncols,f);
+	
+	if (ferror(f)){
+		perror("Couldn't read world file");
+		fclose(f);
+		return false;
+	}
+
+	fclose(f);
+	return true;
+
+}
+
 //Inicializar el mundo
 void gol_init(struct world *w, int mode,int s){
 	for (int i = 0; i < w->nrows; i++)
 		for (int j = 0; j < w->ncols; j++)
 			set_cell(w, CURRENT, i, j, false);
 
-	// default 
+	//default 
 	if (mode == 0) {
 		set_cell(w,CURRENT,5,5,true);
 		set_cell(w,CURRENT,5,6,true);

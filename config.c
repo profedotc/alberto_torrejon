@@ -95,8 +95,8 @@ void config_print_usage(const char *arg0)
 		"\t[-u|--usage]\n"
 		"\t[-w|--width]\n"
 		"\t[-h|--height]\n"
-		"\t[-i|--init <init_mode>]\n"
-		"\t[-s|--seed]\n"
+		"\t[-i|--init <see init_mode>]\n"
+		"\t[-s|--seed <only in init_mode::random>]\n"
 		, arg0);
 
 	printf("\ninit_mode: ");
