@@ -4,19 +4,13 @@
 #define X 10
 #define Y 20
 
-struct world {
-    bool *worlds[2];
-    //Puntero para reserva conjunta
-    bool *mem;
-    int nrows;
-    int ncols;
-};
+struct world;
 
 void gol_init(struct world *w);
 void gol_print(struct world *w);
 void gol_step(struct world *w);
 
-bool gol_alloc(struct world *w,int size_x,int size_y);
+struct world *gol_alloc(int size_x, int size_y);
 void gol_free(struct world *w);
 
 #endif

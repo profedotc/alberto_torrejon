@@ -4,15 +4,22 @@
 
 #include "gol.h"
 
-//MACRO para la reserva del bloque de memoria
-#define CELL(w,wtype,i,j) ((w)->worlds[(wtype)][(i) * (w)->ncols + (j)]) 
-
+struct world {
+    bool *worlds[2];
+    bool *mem; //Puntero para reserva conjunta
+    int nrows;
+    int ncols;
+};
 
 enum world_type {
 	CURRENT = 0,
 	NEXT = 1,
 	NUM_WORLDS = 2
 };
+
+//MACRO para la reserva del bloque de memoria
+#define CELL(w,wtype,i,j) ((w)->worlds[(wtype)][(i) * (w)->ncols + (j)]) 
+
 
 static void fix_coords(const struct world *w, int *i, int *j);
 static void set_cell(struct world *w, enum world_type wtype, 
@@ -22,17 +29,25 @@ static int count_neighbors(const struct world *w, int i, int j);
 static bool rule(const struct world *w,int i,int j);
 
 //Reserva memoria conjunta
-bool gol_alloc(struct world *w,int size_x,int size_y){	
-	w->mem = (bool *)malloc(NUM_WORLDS * size_x * size_y * sizeof(bool));
-	
-	if(!w->mem) return false;
+struct world *gol_alloc(int size_x, int size_y){
+	struct world *w;
 
+	w = malloc(sizeof(struct world));
+	if(!w) 
+		return NULL;
+
+	w->mem = (bool *)malloc(NUM_WORLDS * size_x * size_y * sizeof(bool));
+	if(!w->mem){
+		free(w);
+		return NULL;
+	}
+		
 	w->nrows = size_x;
 	w->ncols = size_y;
 	w->worlds[CURRENT]=w->mem;
 	w->worlds[NEXT]=w->mem + size_x * size_y;
 
-	return true;
+	return w;
 }
 
 //Liberación memoria
