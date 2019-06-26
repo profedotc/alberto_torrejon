@@ -6,6 +6,8 @@
 
 struct world {
     bool *worlds[2];
+    //Puntero para reserva conjunta
+    bool *mem;
     int nrows;
     int ncols;
 };

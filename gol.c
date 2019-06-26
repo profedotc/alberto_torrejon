@@ -4,9 +4,14 @@
 
 #include "gol.h"
 
+//MACRO para la reserva del bloque de memoria
+#define CELL(w,wtype,i,j) ((w)->worlds[(wtype)][(i) * (w)->ncols + (j)]) 
+
+
 enum world_type {
 	CURRENT = 0,
 	NEXT = 1,
+	NUM_WORLDS = 2
 };
 
 static void fix_coords(const struct world *w, int *i, int *j);
@@ -16,24 +21,23 @@ static bool get_cell(const struct world *w, enum world_type wtype, int i, int j)
 static int count_neighbors(const struct world *w, int i, int j);
 static bool rule(const struct world *w,int i,int j);
 
+//Reserva memoria conjunta
+bool gol_alloc(struct world *w,int size_x,int size_y){	
+	w->mem = (bool *)malloc(NUM_WORLDS * size_x * size_y * sizeof(bool));
+	
+	if(!w->mem) return false;
 
-//Reserva de memoria
-bool gol_alloc(struct world *w,int size_x,int size_y){
-	for (int m = CURRENT; m <= NEXT; m++){
-		w->worlds[m] = (bool *)malloc(size_x * size_y * sizeof(bool));
-		if (!w->worlds[m]) return false;  
-  	}
+	w->nrows = size_x;
+	w->ncols = size_y;
+	w->worlds[CURRENT]=w->mem;
+	w->worlds[NEXT]=w->mem + size_x * size_y;
 
-	w->nrows=size_x;
-	w->ncols=size_y;
-  	
 	return true;
 }
 
 //Liberación memoria
 void gol_free(struct world *w){
-	for (int m = CURRENT; m <= NEXT; m++)
-		free(w->worlds[m]);
+		free(w->mem);
 }
 
 //Inicializar el mundo
@@ -43,18 +47,18 @@ void gol_init(struct world *w){
 			for (int j = 0; j < w->ncols; j++) 
 				set_cell(w,CURRENT,i,j,false);
 	// Inicializar con un patrón
-	// set_cell(w,CURRENT,5,5,true);
-	// set_cell(w,CURRENT,5,6,true);
-	// set_cell(w,CURRENT,5,7,true);
+	set_cell(w,CURRENT,5,5,true);
+	set_cell(w,CURRENT,5,6,true);
+	set_cell(w,CURRENT,5,7,true);
 	
-	//Otro patrón de prueba:
-	//¿Por qué empieza en 0 y no en 1?
-	// set_cell(w,CURRENT,0,0,true);	
-	set_cell(w,CURRENT,1,3,true);
-	set_cell(w,CURRENT,2,1,true);
-	set_cell(w,CURRENT,2,3,true);
-	set_cell(w,CURRENT,3,2,true);
-	set_cell(w,CURRENT,3,3,true);
+	// //Otro patrón de prueba:
+	// //¿Por qué empieza en 0 y no en 1?
+	// // set_cell(w,CURRENT,0,0,true);	
+	// set_cell(w,CURRENT,1,3,true);
+	// set_cell(w,CURRENT,2,1,true);
+	// set_cell(w,CURRENT,2,3,true);
+	// set_cell(w,CURRENT,3,2,true);
+	// set_cell(w,CURRENT,3,3,true);
 
 }
 
@@ -100,12 +104,12 @@ static int count_neighbors(const struct world *w,int i,int j){
 
 static void set_cell(struct world *w, enum world_type wtype, int i, int j, bool alive){
 	fix_coords(w,&i,&j);
-	w->worlds[wtype][i * w->ncols + j] = alive;
+	CELL(w,wtype,i,j) = alive;
 }
 
 static bool get_cell(const struct world *w, enum world_type wtype, int i, int j){
 	fix_coords(w,&i,&j);
-	return w->worlds[wtype][i * w->ncols + j];
+	return CELL(w,wtype,i,j);
 }
 
 static void fix_coords(const struct world *w, int *i, int*j){
