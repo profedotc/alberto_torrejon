@@ -1,6 +1,8 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <time.h>
 
 #include "gol.h"
 
@@ -28,9 +30,12 @@ static bool get_cell(const struct world *w, enum world_type wtype, int i, int j)
 static int count_neighbors(const struct world *w, int i, int j);
 static bool rule(const struct world *w,int i,int j);
 
+
 //Reserva memoria conjunta
-struct world *gol_alloc(int size_x, int size_y){
+struct world *gol_alloc(struct config *cfg){
 	struct world *w;
+	int size_x = cfg->nrows;
+	int size_y = cfg->ncols;
 
 	w = malloc(sizeof(struct world));
 	if(!w) 
@@ -56,25 +61,35 @@ void gol_free(struct world *w){
 }
 
 //Inicializar el mundo
-void gol_init(struct world *w){
-	// Poner el mundo a false
-		for (int i = 0; i < w->nrows; i++) 
-			for (int j = 0; j < w->ncols; j++) 
-				set_cell(w,CURRENT,i,j,false);
-	// Inicializar con un patrón
-	set_cell(w,CURRENT,5,5,true);
-	set_cell(w,CURRENT,5,6,true);
-	set_cell(w,CURRENT,5,7,true);
-	
-	// //Otro patrón de prueba:
-	// //¿Por qué empieza en 0 y no en 1?
-	// // set_cell(w,CURRENT,0,0,true);	
-	// set_cell(w,CURRENT,1,3,true);
-	// set_cell(w,CURRENT,2,1,true);
-	// set_cell(w,CURRENT,2,3,true);
-	// set_cell(w,CURRENT,3,2,true);
-	// set_cell(w,CURRENT,3,3,true);
+void gol_init(struct world *w, int mode,int s){
+	for (int i = 0; i < w->nrows; i++)
+		for (int j = 0; j < w->ncols; j++)
+			set_cell(w, CURRENT, i, j, false);
 
+	// default 
+	if (mode == 0) {
+		set_cell(w,CURRENT,5,5,true);
+		set_cell(w,CURRENT,5,6,true);
+		set_cell(w,CURRENT,5,7,true);
+	}
+
+	//random
+	else if (mode == 1) {
+		if (s!=-1){
+			srand((unsigned) s);
+			for (int i = 0; i < w->nrows; i++)
+				for (int j = 0; j < w->ncols; j++)
+					set_cell(w, 0, i, j, rand() % 2);
+		} else {
+			/* Intializes random number generator */
+			time_t t;
+			srand((unsigned) time(&t));
+		
+			for (int i = 0; i < w->nrows; i++)
+				for (int j = 0; j < w->ncols; j++)
+					set_cell(w, 0, i, j, rand() % 2);
+		}
+	}
 }
 
 //Imprimir mundo
@@ -138,3 +153,5 @@ static void fix_coords(const struct world *w, int *i, int*j){
 	else if (*j<0)
 		*j = w->ncols - 1;
 } 
+
+
