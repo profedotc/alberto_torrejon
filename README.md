@@ -14,14 +14,17 @@ El estado de las células evoluciona a lo largo de unidades de tiempo discretas.
 
 ## Compilación
 
-Para compilar y ejecutar escribir en el terminal: 
+Compilar y ejecutar, escribir en el terminal: 
 ```
 $ make 
+$ make ejecutar 
 ```
-Otras opciones:
+
+Otros:
 ```
-$ make ejecutar
 $ make clean
+$ make debug
+$ make release
 ```
 
 ## Utilización
